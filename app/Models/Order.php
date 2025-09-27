@@ -24,12 +24,12 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payment()
+    public function payments()
     {
         return $this->hasOne(Payment::class);
     }
 
-    public function shipment()
+    public function shipments()
     {
         return $this->hasOne(Shipment::class);
     }

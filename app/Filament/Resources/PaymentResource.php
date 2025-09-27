@@ -14,6 +14,11 @@ class PaymentResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-credit-card';
     protected static ?string $navigationGroup = 'Transactions';
 
+    public static function canCreate(): bool
+    {
+        return false;
+    }
+
     public static function table(Table $table): Table
     {
         return $table->columns([
