@@ -40,6 +40,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'customer' => [
+            'driver' => 'jwt', // kalau pakai session (web)
+            'provider' => 'customers',
+        ],
         'api' => [
             'driver' => 'jwt',
             'provider' => 'customers',

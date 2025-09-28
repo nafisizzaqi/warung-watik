@@ -40,8 +40,11 @@ class ProductResource extends Resource
 
                 Forms\Components\FileUpload::make('image')
                     ->image()
-                    ->columnSpanFull()
                     ->directory('products'),
+
+                Forms\Components\TextInput::make('stock')
+                    ->numeric()
+                    ->required(),
 
                 Forms\Components\TextInput::make('price')
                     ->numeric()
