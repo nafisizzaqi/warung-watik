@@ -8,10 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'user_id', 'order_number', 'status',
-        'total_amount', 'shipping_cost', 'grand_total',
-        'payment_method', 'midtrans_order_id',
-        'midtrans_transaction_status', 'shipping_address'
+        'customer_id',
+        'order_number',
+        'status',
+        'total_amount',
+        'shipping_cost',
+        'grand_total',
+        'payment_method',
+        'midtrans_order_id',
+        'midtrans_transaction_status',
+        'shipping_address'
     ];
 
     public function user()
@@ -24,7 +30,7 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payments()
+    public function payment()
     {
         return $this->hasOne(Payment::class);
     }
@@ -39,4 +45,3 @@ class Order extends Model
         return $this->belongsTo(Customer::class);
     }
 }
-

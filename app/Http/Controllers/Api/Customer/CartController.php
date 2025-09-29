@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api\Customer;
 
 use App\Http\Controllers\Controller;
@@ -15,7 +16,7 @@ class CartController extends Controller
         $user = auth('customer')->user();
 
         $cart = Cart::with('items.product')
-            ->firstOrCreate(['user_id' => $user->id]);
+            ->firstOrCreate(['customer_id' => $user->id]);
 
         return response()->json([
             'success' => true,
@@ -37,17 +38,25 @@ class CartController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $cart = Cart::firstOrCreate(['user_id' => $user->id]);
+        $cart = Cart::firstOrCreate(['customer_id' => $user->id]);
 
-        $item = CartItem::updateOrCreate(
-            [
+        $item = CartItem::where('cart_id', $cart->id)
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($item) {
+            // kalau item sudah ada, update quantity
+            $item->increment('quantity', $request->quantity);
+        } else {
+            // kalau belum ada, bikin baru
+            $item = CartItem::create([
                 'cart_id' => $cart->id,
                 'product_id' => $request->product_id,
-            ],
-            [
-                'quantity' => \DB::raw("quantity + {$request->quantity}")
-            ]
-        );
+                'quantity' => $request->quantity,
+                'price' => $request->price, // Assuming price is passed in request
+                'subtotal' => $request->price * $request->quantity,
+            ]);
+        }
 
         return response()->json([
             'success' => true,
@@ -69,9 +78,17 @@ class CartController extends Controller
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cart = Cart::where('customer_id', $user->id)->firstOrFail();
+        $item = CartItem::where('id', $id)
+            ->where('cart_id', $cart->id)
+            ->first();
 
-        $item = CartItem::where('cart_id', $cart->id)->findOrFail($id);
+        if (!$item) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Item not found in your cart',
+            ], 404);
+        }
 
         $item->quantity = $request->quantity;
         $item->save();
@@ -88,7 +105,7 @@ class CartController extends Controller
     {
         $user = auth('customer')->user();
 
-        $cart = Cart::where('user_id', $user->id)->firstOrFail();
+        $cart = Cart::where('customer_id', $user->id)->firstOrFail();
 
         $item = CartItem::where('cart_id', $cart->id)->findOrFail($id);
         $item->delete();
