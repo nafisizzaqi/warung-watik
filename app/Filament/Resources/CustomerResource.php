@@ -22,7 +22,7 @@ class CustomerResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')->sortable(),
-                Tables\Columns\ImageColumn::make('image')->label('Profile')->rounded(),
+                Tables\Columns\ImageColumn::make('image')->label('Profile')->rounded()->disk('public'),
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('email')->searchable()->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->label('Registered')->dateTime()->sortable(),

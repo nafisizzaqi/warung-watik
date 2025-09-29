@@ -43,7 +43,7 @@ class OrderResource extends Resource
         return $table->columns([
             Tables\Columns\TextColumn::make('id'),
             Tables\Columns\TextColumn::make('order_number'),
-            Tables\Columns\TextColumn::make('user.name')->label('User'),
+            Tables\Columns\TextColumn::make('customer.name')->label('User'),
             Tables\Columns\TextColumn::make('status'),
             Tables\Columns\TextColumn::make('grand_total'),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),

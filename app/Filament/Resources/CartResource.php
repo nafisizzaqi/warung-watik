@@ -24,7 +24,7 @@ class CartResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('id'),
-            Tables\Columns\TextColumn::make('user.name')->label('User'),
+            Tables\Columns\TextColumn::make('customer.name')->label('Customer'),
             Tables\Columns\TextColumn::make('items_count')->counts('items')->label('Items Count'),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),
         ])

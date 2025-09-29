@@ -21,6 +21,11 @@ class Customer extends Authenticatable implements JWTSubject
         'password',
     ];
 
+    public function carts()
+    {
+        return $this->hasMany(Cart::class);
+    }
+
     public function orders()
     {
         return $this->hasMany(Order::class);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Customer;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Shipment;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
@@ -49,7 +50,8 @@ class PaymentController extends Controller
                     'service' => 'REG',         // default service
                     'cost' => 10000,            // default cost, bisa ambil dari order shipping_cost
                     'etd' => '2-3 days',        // default estimated delivery
-                    'status' => 'processing'
+                    'status' => 'processing',
+                    'tracking_number' => strtoupper(Str::random(8)),
                 ]);
             }
         }
