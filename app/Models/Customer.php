@@ -41,4 +41,15 @@ class Customer extends Authenticatable implements JWTSubject
     {
         return [];
     }
+
+    public function getImageUrlAttribute()
+{
+    if ($this->image) {
+        return asset('storage/' . $this->image);
+    }
+
+    // Kalau image kosong, generate avatar via UI Avatars (nggak perlu simpan file)
+    return 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=random&color=fff';
+}
+
 }

@@ -14,21 +14,26 @@ use Illuminate\Support\Facades\Log;
 class OrderController extends Controller
 {
     // List orders milik customer
-    public function index(Request $request)
+ public function index(Request $request)
 {
     $customer = auth('customer')->user();
-    $orders = Order::with('items.product')
+
+    $orders = Order::with(['items.product', 'payments', 'shipments'])
         ->where('customer_id', $customer->id)
         ->get()
         ->map(function($order) {
             return [
                 'id' => $order->id,
-                'queue_number' => $order->order_number, // buat React tetap cocok
+                'queue_number' => $order->order_number, // supaya React tetap cocok
                 'status' => $order->status,
-                'subtotal' => $order->total_amount,     // atau sesuaikan
-                'discount' => 0,                        // kalau ga ada diskon di DB
-                'total' => $order->grand_total,         // untuk React tetap pakai .total
+                'subtotal' => $order->total_amount,     // sesuai DB
+                'discount' => 0,                        // kalau ga ada diskon
+                'total' => $order->grand_total,         // supaya React tetap pakai .total
+                'shipping_address' => $order->shipping_address ?? null,
+                'payment_method' => $order->payment_method ?? null,
                 'items' => $order->items,
+                'payment' => $order->payment,           // langsung include payment
+                'shipment' => $order->shipment,         // langsung include shipment
                 'created_at' => $order->created_at,
             ];
         });
@@ -38,6 +43,7 @@ class OrderController extends Controller
         'data' => $orders
     ]);
 }
+
 
     // Buat order dari cart
     public function store(Request $request)
