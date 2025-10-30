@@ -39,7 +39,7 @@ class PaymentController extends Controller
 
         // Bisa juga update status order sesuai payment
         if ($payment->transaction_status === 'settlement' || $payment->transaction_status === 'capture') {
-            $order->status = 'paid';
+            $order->status = 'selesai';
             $order->save();
 
             // Buat shipment otomatis
@@ -66,7 +66,7 @@ class PaymentController extends Controller
     // Lihat detail pembayaran order
     public function show($id)
     {
-        $order = Order::with('payment')->find($id);
+        $order = Order::with('payments')->find($id);
         $payment = $order->payment;
 
         return response()->json([

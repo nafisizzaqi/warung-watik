@@ -8,17 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-        'customer_id',
-        'order_number',
-        'status',
-        'total_amount',
-        'shipping_cost',
-        'grand_total',
-        'payment_method',
-        'midtrans_order_id',
-        'midtrans_transaction_status',
-        'shipping_address'
-    ];
+    'customer_id',
+    'order_number',
+    'queue_number',
+    'status',
+    'total_amount',
+    'shipping_cost',
+    'grand_total',
+    'payment_method',
+    'shipping_address',
+];
 
     public function user()
     {
@@ -30,9 +29,9 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function payment()
+    public function payments()
     {
-        return $this->hasOne(Payment::class);
+        return $this->hasOne(Payment::class, 'order_id');
     }
 
     public function shipments()

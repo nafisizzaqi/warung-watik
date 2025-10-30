@@ -24,7 +24,7 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (!$token = auth()->guard('api')->attempt($credentials)) {
+        if (!$token = auth()->guard('customer')->attempt($credentials)) {
             return response()->json([
                 'success' => false,
                 'message' => 'Invalid email or password'
@@ -35,7 +35,7 @@ class LoginController extends Controller
             'success' => true,
             'token' => $token,
             'token_type' => 'bearer',
-            'customer' => auth()->guard('api')->user()
+            'customer' => auth()->guard('customer')->user()
         ], 200);
     }
 }

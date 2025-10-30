@@ -9,36 +9,53 @@ use App\Models\OrderItem;
 use App\Models\Cart;
 use App\Models\CartItem;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 
 class OrderController extends Controller
 {
     // List orders milik customer
     public function index(Request $request)
-    {
-        $customer = auth('customer')->user();
-        $orders = Order::with('items.product')
-            ->where('customer_id', $customer->id)
-            ->get();
+{
+    $customer = auth('customer')->user();
+    $orders = Order::with('items.product')
+        ->where('customer_id', $customer->id)
+        ->get()
+        ->map(function($order) {
+            return [
+                'id' => $order->id,
+                'queue_number' => $order->order_number, // buat React tetap cocok
+                'status' => $order->status,
+                'subtotal' => $order->total_amount,     // atau sesuaikan
+                'discount' => 0,                        // kalau ga ada diskon di DB
+                'total' => $order->grand_total,         // untuk React tetap pakai .total
+                'items' => $order->items,
+                'created_at' => $order->created_at,
+            ];
+        });
 
-        return response()->json([
-            'success' => true,
-            'data' => $orders
-        ]);
-    }
+    return response()->json([
+        'success' => true,
+        'data' => $orders
+    ]);
+}
 
     // Buat order dari cart
     public function store(Request $request)
     {
+        try {
         $customer = auth('customer')->user();
+        Log::info('Auth check', ['customer' => $customer]);
+
+        if (!$customer) {
+            return response()->json(['error' => 'Unauthenticated customer'], 401);
+        }
+
         $cart = Cart::with('items.product')
             ->where('customer_id', $customer->id)
             ->first();
 
         if (!$cart || $cart->items->isEmpty()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Cart is empty'
-            ], 400);
+            return response()->json(['error' => 'Cart is empty'], 400);
         }
 
         $total = $cart->items->sum(function ($item) {
@@ -48,16 +65,23 @@ class OrderController extends Controller
         $shipping_cost = $request->shipping_cost ?? 0;
         $grand_total = $total + $shipping_cost;
 
-        $order = Order::create([
-            'customer_id' => $customer->id,
-            'order_number' => Str::upper(Str::random(10)),
-            'status' => 'pending',
-            'total_amount' => $total,
-            'shipping_cost' => $shipping_cost,
-            'grand_total' => $grand_total,
-            'shipping_address' => $request->shipping_address,
-            'payment_method' => $request->payment_method,
-        ]);
+        // Hitung queue_number terbaru
+$latestQueue = Order::max('queue_number') ?? 0;
+$queueNumber = $latestQueue + 1;
+
+// Buat order
+$order = Order::create([
+    'customer_id' => $customer->id,
+    'order_number' => Str::upper(Str::random(10)),
+    'queue_number' => $queueNumber,   // <--- sini
+    'status' => 'masuk',              // default status baru
+    'total_amount' => $total,
+    'shipping_cost' => $shipping_cost,
+    'grand_total' => $grand_total,
+    'shipping_address' => $request->shipping_address,
+    'payment_method' => $request->payment_method,
+]);
+
 
         foreach ($cart->items as $item) {
             OrderItem::create([
@@ -78,6 +102,10 @@ class OrderController extends Controller
             'message' => 'Order created successfully',
             'data' => $order->load('items.product')
         ]);
+        } catch (\Throwable $e) {
+        Log::error('OrderController store() error: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
+        return response()->json(['error' => $e->getMessage()], 500);
+    }
     }
 
     // Show detail order + items

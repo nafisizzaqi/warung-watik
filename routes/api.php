@@ -11,7 +11,8 @@ use App\Http\Controllers\Api\Customer\{
     OrderController,
     PaymentController,
     ShipmentController,
-    ProfileController
+    ProfileController,
+    TestimonialController
 };
 
 Route::prefix('customer')->group(function () {
@@ -43,6 +44,9 @@ Route::prefix('customer')->group(function () {
 
         // Shipments
         Route::get('orders/{id}/shipment', [ShipmentController::class, 'show']);
+
+        Route::get('/testimonials', [TestimonialController::class, 'index']);
+    Route::post('/testimonials', [TestimonialController::class, 'store']);
     });
 
     // Public
