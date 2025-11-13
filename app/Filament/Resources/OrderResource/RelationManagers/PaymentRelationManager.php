@@ -27,9 +27,6 @@ class PaymentRelationManager extends RelationManager
                     ->sortable(),
                 Tables\Columns\TextColumn::make('gross_amount')->label('Amount')->money('idr')->sortable(),
                 Tables\Columns\TextColumn::make('fraud_status')->sortable(),
-                Tables\Columns\TextColumn::make('va_number')->label('VA Number'),
-                Tables\Columns\TextColumn::make('bill_key'),
-                Tables\Columns\TextColumn::make('biller_code'),
                 Tables\Columns\TextColumn::make('transaction_time')->label('Transaction Time')->dateTime()->sortable(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime()->sortable(),
             ])

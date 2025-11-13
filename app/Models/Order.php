@@ -8,16 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable = [
-    'customer_id',
-    'order_number',
-    'queue_number',
-    'status',
-    'total_amount',
-    'shipping_cost',
-    'grand_total',
-    'payment_method',
-    'shipping_address',
-];
+        'customer_id',
+        'order_number',
+        'queue_number',
+        'status',
+        'total_amount',
+        'shipping_cost',
+        'grand_total',
+        'payment_method',
+        'shipping_address',
+        'snap_token',          // 👈 buat simpan token Snap dari Midtrans
+        'midtrans_order_id',   // 👈 buat simpan ID transaksi dari Midtrans
+    ];
 
     public function user()
     {

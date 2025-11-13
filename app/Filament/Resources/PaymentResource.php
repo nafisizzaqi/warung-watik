@@ -25,7 +25,15 @@ class PaymentResource extends Resource
             Tables\Columns\TextColumn::make('id'),
             Tables\Columns\TextColumn::make('order.order_number')->label('Order'),
             Tables\Columns\TextColumn::make('payment_type'),
-            Tables\Columns\TextColumn::make('transaction_status'),
+            Tables\Columns\BadgeColumn::make('transaction_status')
+                ->label('Status')
+                ->colors([
+                    'success' => 'success',
+                    'warning' => 'pending',
+                    'danger' => 'cancel',
+                    'primary' => 'capture',
+                    'secondary' => 'expire',
+                ]),
             Tables\Columns\TextColumn::make('gross_amount'),
             Tables\Columns\TextColumn::make('transaction_time')->dateTime(),
         ]);

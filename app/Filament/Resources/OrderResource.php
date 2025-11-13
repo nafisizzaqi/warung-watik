@@ -34,7 +34,7 @@ class OrderResource extends Resource
                     'siap_ambil' => 'Siap_ambil',
                     'selesai' => 'Selesai',
                     'batal' => 'Batal',
-                ])->required(),
+                ])->required(),     
         ]);
     }
 
@@ -44,7 +44,13 @@ class OrderResource extends Resource
             Tables\Columns\TextColumn::make('id'),
             Tables\Columns\TextColumn::make('order_number'),
             Tables\Columns\TextColumn::make('customer.name')->label('User'),
-            Tables\Columns\TextColumn::make('status'),
+            Tables\Columns\BadgeColumn::make('status')
+                ->colors([
+                    'primary' => 'masuk',
+                    'warning' => 'diproses',
+                    'success' => 'selesai',
+                    'danger' => 'batal',
+                ]),
             Tables\Columns\TextColumn::make('grand_total'),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),
         ]);

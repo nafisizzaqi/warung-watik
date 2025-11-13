@@ -45,4 +45,6 @@ return [
     'is_sanitized' => env('MIDTRANS_IS_SANITIZED', true),
 
     'is_3ds' => env('MIDTRANS_IS_3DS', true),
+
+    'merchant_id' => env('MIDTRANS_MERCHANT_ID'),
 ];

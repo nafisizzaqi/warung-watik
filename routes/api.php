@@ -12,7 +12,8 @@ use App\Http\Controllers\Api\Customer\{
     PaymentController,
     ShipmentController,
     ProfileController,
-    TestimonialController
+    TestimonialController,
+    MidtransController // <--- tambahin ini
 };
 
 Route::prefix('customer')->group(function () {
@@ -44,9 +45,17 @@ Route::prefix('customer')->group(function () {
 
         // Shipments
         Route::get('orders/{id}/shipment', [ShipmentController::class, 'show']);
+        Route::post('/orders/{order}/shipment', [ShipmentController::class, 'createShipment']);
+        Route::get('/shipments/couriers', [ShipmentController::class, 'getCourierOptions']);
 
+        // Testimonials
         Route::get('/testimonials', [TestimonialController::class, 'index']);
-    Route::post('/testimonials', [TestimonialController::class, 'store']);
+        Route::post('/testimonials', [TestimonialController::class, 'store']);
+
+        // 💳 Midtrans integration
+        Route::post('orders/{id}/midtrans/snap-token', [MidtransController::class, 'createSnapToken'])
+            ->name('customer.midtrans.snap');
+            
     });
 
     // Public
@@ -55,3 +64,9 @@ Route::prefix('customer')->group(function () {
     Route::get('products', [ProductController::class, 'index']);
     Route::get('products/{id}', [ProductController::class, 'show']);
 });
+
+// Midtrans callback (tidak perlu auth)
+Route::post('/midtrans/callback', [MidtransController::class, 'handleCallback']);
+Route::get('orders/{midtransOrderId}/midtrans/status', [MidtransController::class, 'checkStatus'])
+    ->name('customer.midtrans.status')
+    ->middleware('auth:customer');

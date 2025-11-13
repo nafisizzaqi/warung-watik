@@ -18,18 +18,13 @@ class ShipmentResource extends Resource
 
     public static function canCreate(): bool
     {
-        return false;
+        return false; // Admin tidak bisa buat shipment baru manual
     }
 
     public static function form(Form $form): Form
     {
         return $form->schema([
-            Forms\Components\TextInput::make('tracking_number'),
-            Forms\Components\Select::make('status')->options([
-                'processing' => 'Processing',
-                'on_delivery' => 'On Delivery',
-                'delivered' => 'Delivered',
-            ]),
+            
         ]);
     }
 
@@ -37,11 +32,15 @@ class ShipmentResource extends Resource
     {
         return $table->columns([
             Tables\Columns\TextColumn::make('order.order_number')->label('Order'),
-            Tables\Columns\TextColumn::make('courier'),
-            Tables\Columns\TextColumn::make('service'),
-            Tables\Columns\TextColumn::make('cost'),
-            Tables\Columns\TextColumn::make('status'),
-            Tables\Columns\TextColumn::make('tracking_number'),
+            Tables\Columns\TextColumn::make('courier')->label('Kurir'),
+            Tables\Columns\TextColumn::make('service')->label('Service'),
+            Tables\Columns\TextColumn::make('cost')->label('Ongkir'),
+            Tables\Columns\BadgeColumn::make('status')
+                ->colors([
+                    'warning' => 'processing',
+                    'info' => 'on_delivery',
+                    'success' => 'delivered',
+                ]),
         ]);
     }
 

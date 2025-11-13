@@ -13,7 +13,7 @@
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "laravolt/avatar": "^6.3",
-        "midtrans/midtrans-php": "2.6.1",
+        "midtrans/midtrans-php": "^2.6",
         "php-open-source-saver/jwt-auth": "*"
     },
     "require-dev": {
