@@ -56,7 +56,8 @@ Route::prefix('customer')->group(function () {
         // 💳 Midtrans integration
         Route::post('orders/{id}/midtrans/snap-token', [MidtransController::class, 'createSnapToken'])
             ->name('customer.midtrans.snap');
-            
+
+        Route::post('products/{id}/decrease-stock', [ProductController::class, 'decreaseStock']);
     });
 
     // Public

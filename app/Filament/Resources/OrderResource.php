@@ -29,11 +29,11 @@ class OrderResource extends Resource
         return $form->schema([
             Forms\Components\Select::make('status')
                 ->options([
-                    'masuk' => 'Masuk',
-                    'diproses' => 'Diproses',
-                    'siap_ambil' => 'Siap_ambil',
-                    'selesai' => 'Selesai',
-                    'batal' => 'Batal',
+                    'pending' => 'Masuk',
+                    'processing' => 'Diproses',
+                    'ready' => 'Siap_ambil',
+                    'success' => 'Selesai',
+                    'cancel' => 'Batal',
                 ])->required(),     
         ]);
     }

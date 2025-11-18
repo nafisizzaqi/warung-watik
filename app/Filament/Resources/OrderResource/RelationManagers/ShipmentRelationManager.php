@@ -18,7 +18,6 @@ class ShipmentRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('service')->label('Service'),
                 Tables\Columns\TextColumn::make('cost')->money('idr'),
                 Tables\Columns\TextColumn::make('etd')->label('Est. Delivery'),
-                Tables\Columns\TextColumn::make('tracking_number')->label('Tracking No'),
                 Tables\Columns\TextColumn::make('status')->badge(),
                 Tables\Columns\TextColumn::make('created_at')->dateTime(),
             ])

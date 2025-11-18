@@ -16,4 +16,10 @@ class EditOrder extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    // Ini yang bikin redirect ke list setelah save
+    protected function getSavedRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 }
