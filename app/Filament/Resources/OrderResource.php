@@ -34,7 +34,7 @@ class OrderResource extends Resource
                     'ready' => 'Siap_ambil',
                     'success' => 'Selesai',
                     'cancel' => 'Batal',
-                ])->required(),     
+                ])->required(),
         ]);
     }
 

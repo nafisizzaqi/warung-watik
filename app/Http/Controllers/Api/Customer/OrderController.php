@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api\Customer;
 
+use Stripe\Stripe;
 use App\Models\Cart;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\CartItem;
 use App\Models\OrderItem;
 use Illuminate\Support\Str;
@@ -159,7 +161,7 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'shipping_address' => 'required|string',
-            'payment_method' => 'required|in:midtrans,cash',
+            'payment_method' => 'required|in:midtrans,cash,stripe',
             'courier' => 'required|string',
             'service' => 'required|string',
             'shipping_cost' => 'nullable|numeric|min:0', // <- tambahan
@@ -192,5 +194,37 @@ class OrderController extends Controller
             'message' => 'Order updated successfully',
             'data' => $order->fresh()
         ]);
+    }
+    public function getOrderBySession($sessionId)
+    {
+        $order = Order::where('stripe_session_id', $sessionId)->with('items.product')->first();
+
+        if (!$order) {
+            return response()->json(['message' => 'Order tidak ditemukan'], 404);
+        }
+
+        return response()->json($order);
+    }
+
+    public function orderSuccess(Request $request)
+    {
+        $sessionId = $request->query('session_id');
+
+        if (!$sessionId) {
+            return redirect('/')->with('error', 'Session ID not found.');
+        }
+
+        Stripe::setApiKey(env('STRIPE_SECRET_KEY'));
+        $session = \Stripe\Checkout\Session::retrieve($sessionId);
+
+        if ($session->payment_status === 'paid') {
+            $payment = Payment::where('transaction_id', $sessionId)->first();
+            if ($payment && $payment->transaction_status === 'pending') {
+                $payment->update(['transaction_status' => 'success']);
+                $payment->order->update(['status' => 'success']);
+            }
+        }
+
+        return view('order-success', ['session' => $session]);
     }
 }

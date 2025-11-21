@@ -100,7 +100,7 @@ class PaymentController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Payment recorded successfully',
-            'data' => $payment
+            'data' => $order->load(['items.product.category', 'payments', 'shipments'])
         ]);
     }
 

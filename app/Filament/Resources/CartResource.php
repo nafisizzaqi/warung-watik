@@ -28,9 +28,9 @@ class CartResource extends Resource
             Tables\Columns\TextColumn::make('items_count')->counts('items')->label('Items Count'),
             Tables\Columns\TextColumn::make('created_at')->dateTime(),
         ])
-        ->actions([
-            Tables\Actions\ViewAction::make()->color('info'),
-        ]);
+            ->actions([
+                Tables\Actions\ViewAction::make()->color('info'),
+            ]);
     }
 
     public static function getRelations(): array

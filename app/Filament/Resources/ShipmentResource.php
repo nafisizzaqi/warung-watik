@@ -24,7 +24,7 @@ class ShipmentResource extends Resource
     public static function form(Form $form): Form
     {
         return $form->schema([
-            
+
         ]);
     }
 

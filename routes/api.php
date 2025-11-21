@@ -13,7 +13,8 @@ use App\Http\Controllers\Api\Customer\{
     ShipmentController,
     ProfileController,
     TestimonialController,
-    MidtransController // <--- tambahin ini
+    MidtransController,
+    StripeController
 };
 
 Route::prefix('customer')->group(function () {
@@ -58,6 +59,7 @@ Route::prefix('customer')->group(function () {
             ->name('customer.midtrans.snap');
 
         Route::post('products/{id}/decrease-stock', [ProductController::class, 'decreaseStock']);
+        Route::post('orders/{order}/stripe-checkout', [StripeController::class, 'createCheckoutSession']);
     });
 
     // Public
@@ -68,7 +70,11 @@ Route::prefix('customer')->group(function () {
 });
 
 // Midtrans callback (tidak perlu auth)
+Route::post('/webhook/stripe', [StripeController::class, 'handleWebhook']);
+Route::get('customer/orders/by-session/{sessionId}', [OrderController::class, 'getOrderBySession']);
 Route::post('/midtrans/callback', [MidtransController::class, 'handleCallback']);
 Route::get('orders/{midtransOrderId}/midtrans/status', [MidtransController::class, 'checkStatus'])
     ->name('customer.midtrans.status')
     ->middleware('auth:customer');
+Route::get('customer/orders/success', [OrderController::class, 'orderSuccess'])
+    ->name('customer.orders.success');

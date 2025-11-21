@@ -33,7 +33,7 @@ class ProfileController extends Controller
     {
         $customer = auth('customer')->user();
 
-        if (! $customer) {
+        if (!$customer) {
             return response()->json(['success' => false, 'message' => 'Unauthenticated'], 401);
         }
 
